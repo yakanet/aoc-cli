@@ -1,0 +1,41 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+    id 'application'
+}
+
+group 'com.github.yakanet'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    compileKotlin {
+        kotlinOptions.useIR = true
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    }
+    compileTestKotlin {
+        kotlinOptions.useIR = true
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    }
+}
+
+application {
+    mainClass.set("com.github.yakanet.MainKt")
+}
+
+dependencies {
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation "info.picocli:picocli:4.6.1"
+    implementation "org.seleniumhq.selenium:selenium-java:4.0.0"
+    implementation 'io.github.bonigarcia:webdrivermanager:5.0.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'org.slf4j:slf4j-nop:1.7.30'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
