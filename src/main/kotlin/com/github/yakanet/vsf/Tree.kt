@@ -42,7 +42,7 @@ class Tree(private val cwd: Path) {
         load(file, NodeType.FILE)
         if (!Files.exists(cwd.resolve(file)) || override) {
             fs[file]!!.content = content
-            operations.add(UpdateFile(fs[file]!!))
+            operations.add(UpdateFileOperation(fs[file]!!))
         }
     }
 
@@ -53,7 +53,7 @@ class Tree(private val cwd: Path) {
 
     fun deleteFile(file: String) {
         load(file, NodeType.FILE)
-        operations.add(DeleteFile(fs[file]!!))
+        operations.add(DeleteFileOperation(fs[file]!!))
     }
 
     fun commit() {
@@ -67,7 +67,7 @@ class Tree(private val cwd: Path) {
 
     fun executeCommand(path: String, vararg command: String) {
         load(path, lastNode = NodeType.DIRECTORY)
-        operations.add(ExecuteCommandOperation(listOf(*command), fs[path]!!))
+        operations.add(ExecuteOperation(listOf(*command), fs[path]!!))
     }
 
     fun hasFile(path: String) = fs.containsKey(path)

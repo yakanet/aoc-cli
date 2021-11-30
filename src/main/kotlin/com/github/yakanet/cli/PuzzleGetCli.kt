@@ -21,6 +21,12 @@ class PuzzleGetCli : Callable<Int> {
     )
     var year: Int = LocalDateTime.now().year
 
+    @CommandLine.Option(
+        names = ["-d", "--day"],
+        description = ["Puzzle day"],
+    )
+    var day: Int = LocalDateTime.now().dayOfMonth
+
     override fun call(): Int {
         return try {
             val tree = Path.of(".").toTree()
@@ -28,13 +34,13 @@ class PuzzleGetCli : Callable<Int> {
             val workspace = getWorkspace(Language.valueOf(store.language), tree)
             val authenticator = SeleniumAuthentication(store)
             val puzzleRetriever = PuzzleRetriever(authenticator)
-            val puzzle = puzzleRetriever.getSingle(Year(year), Day(2))
+            val puzzle = puzzleRetriever.getSingle(Year(year), Day(day))
             workspace.createPuzzle(puzzle, true)
             if (store.useGit) {
                 workspace.gitAdd()
             }
             tree.commit()
-            return 0;
+            return 0
         } catch (e: Exception) {
             handleCliError(e)
         }

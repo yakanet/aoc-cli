@@ -3,7 +3,6 @@ package com.github.yakanet
 import com.github.yakanet.cli.*
 import picocli.CommandLine
 import picocli.CommandLine.Command
-import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>): Unit = CommandLine(MainCli()).run {
@@ -23,9 +22,4 @@ fun main(args: Array<String>): Unit = CommandLine(MainCli()).run {
         PuzzleGetCli::class
     ],
 )
-class MainCli : Callable<Int> {
-
-    override fun call(): Int {
-        return 0
-    }
-}
+class MainCli

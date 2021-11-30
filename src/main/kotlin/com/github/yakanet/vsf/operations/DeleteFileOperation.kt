@@ -4,7 +4,7 @@ import com.github.yakanet.vsf.Node
 import picocli.CommandLine
 import java.nio.file.Files
 
-class DeleteFile(node: Node) : Operation(node) {
+class DeleteFileOperation(node: Node) : Operation(node) {
     override val name = "Delete file"
 
     override fun execute() {

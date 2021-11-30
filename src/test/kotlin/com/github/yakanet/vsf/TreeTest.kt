@@ -1,6 +1,6 @@
 package com.github.yakanet.vsf
 
-import com.github.yakanet.vsf.operations.ExecuteCommandOperation
+import com.github.yakanet.vsf.operations.ExecuteOperation
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -77,6 +77,6 @@ internal class TreeTest {
         tree.executeCommand("", "a command")
 
         // Then
-        assertTrue(tree.listOperations()[0] is ExecuteCommandOperation)
+        assertTrue(tree.listOperations()[0] is ExecuteOperation)
     }
 }

@@ -23,8 +23,14 @@ class KotlinWorkspace(tree: Tree) : Workspace(tree) {
             dependencies {
                 implementation platform("org.jetbrains.kotlin:kotlin-bom")
             }
-        """.trimIndent()
+        """.trimIndent(),
         )
+        tree.writeFile("README.md",
+        """
+            # Advent of code
+            
+            Project created using [AOC Cli](https://github.com/yakanet/aoc-cli)
+        """.trimIndent())
     }
 
     override fun createPuzzle(puzzle: Puzzle, override: Boolean) {

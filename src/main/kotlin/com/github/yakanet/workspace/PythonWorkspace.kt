@@ -9,6 +9,12 @@ class PythonWorkspace(tree: Tree) : Workspace(tree) {
     override fun createWorkspace() {
         tree.mkdirs("src/main/python")
         tree.mkdirs("input")
+        tree.writeFile("README.md",
+            """
+            # Advent of code
+            
+            Project created using [AOC Cli](https://github.com/yakanet/aoc-cli)
+        """.trimIndent())
     }
 
     override fun createPuzzle(puzzle: Puzzle, override: Boolean) {
