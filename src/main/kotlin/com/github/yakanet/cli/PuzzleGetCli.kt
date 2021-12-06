@@ -6,8 +6,6 @@ import com.github.yakanet.model.Day
 import com.github.yakanet.model.Year
 import com.github.yakanet.store.Store
 import com.github.yakanet.vsf.toTree
-import com.github.yakanet.workspace.Language
-import com.github.yakanet.workspace.getWorkspace
 import picocli.CommandLine
 import java.nio.file.Path
 import java.time.LocalDateTime
@@ -31,12 +29,12 @@ class PuzzleGetCli : Callable<Int> {
         return try {
             val tree = Path.of(".").toTree()
             val store = Store(tree)
-            val workspace = getWorkspace(Language.valueOf(store.language), tree)
+            val workspace = store.loadWorkspace()
             val authenticator = SeleniumAuthentication(store)
             val puzzleRetriever = PuzzleRetriever(authenticator)
             val puzzle = puzzleRetriever.getSingle(Year(year), Day(day))
             workspace.createPuzzle(puzzle, true)
-            if (store.useGit) {
+            if (store.useGit.toBoolean()) {
                 workspace.gitAdd()
             }
             tree.commit()

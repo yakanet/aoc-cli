@@ -1,48 +1,49 @@
 package com.github.yakanet.store
 
 import com.github.yakanet.vsf.Tree
+import com.github.yakanet.workspace.Language
+import com.github.yakanet.workspace.Workspace
+import com.github.yakanet.workspace.getWorkspace
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.*
+import kotlin.reflect.KProperty
 
-class Store(val tree: Tree, failOnNonExists: Boolean = true) {
-    val configurationFile = "aoccli.properties"
-    private val properties = Properties().apply {
-        val propertyContent = tree.readFile(configurationFile)
-        if (propertyContent === null && failOnNonExists) {
-            throw StoreNotExistsException()
-        }
-        propertyContent?.let { load(ByteArrayInputStream(it.toByteArray())) }
+class Store(val tree: Tree) {
+    val publicConfigurationFile = "aoccli.properties"
+    val privateConfigurationFile = ".aoccli.properties"
+
+    fun create(): Store {
+        tree.writeFile(publicConfigurationFile, "")
+        tree.writeFile(privateConfigurationFile, "")
+        return this
     }
 
-    var credentials: String?
-        get() = properties.getProperty("credentials")
-        set(value) {
-            properties.setProperty("credentials", value)
-            commit()
-        }
+    fun loadWorkspace(): Workspace {
+        return language?.let {
+            getWorkspace(Language.valueOf(it), tree)
+        } ?: throw StoreNotExistsException()
+    }
 
-    var browser: String?
-        get() = properties.getProperty("browser")
-        set(value) {
-            properties.setProperty("browser", value)
-            commit()
-        }
-    var language: String
-        get() = properties.getProperty("language")
-        set(value) {
-            properties.setProperty("language", value)
-            commit()
-        }
+    var credentials: String? by StoreProperty(tree, privateConfigurationFile)
 
-    var useGit: Boolean
-        get() = properties.getProperty("git", "true").toBoolean()
-        set(value) {
-            properties.setProperty("git", value.toString())
-            commit()
-        }
+    var browser: String? by StoreProperty(tree, publicConfigurationFile)
+    var language: String? by StoreProperty(tree, publicConfigurationFile)
 
-    private fun commit() {
+    var useGit: String? by StoreProperty(tree, publicConfigurationFile)
+}
+
+private class StoreProperty(private val tree: Tree, private val configurationFile: String) {
+    operator fun getValue(store: Store, property: KProperty<*>): String? {
+        val propertyContent = tree.readFile(configurationFile) ?: throw StoreNotExistsException()
+        return Properties().apply { load(ByteArrayInputStream(propertyContent.toByteArray())) }
+            .getProperty(property.name)
+    }
+
+    operator fun setValue(store: Store, property: KProperty<*>, s: String?) {
+        val propertyContent = tree.readFile(configurationFile) ?: throw StoreNotExistsException()
+        val properties = Properties().apply { load(ByteArrayInputStream(propertyContent.toByteArray())) }
+        properties[property.name] = s
         tree.writeFile(
             configurationFile,
             ByteArrayOutputStream().use {

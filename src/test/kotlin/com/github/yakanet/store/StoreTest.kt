@@ -2,6 +2,7 @@ package com.github.yakanet.store
 
 import com.github.yakanet.vsf.Tree
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.nio.file.Path
 import kotlin.test.assertContains
@@ -10,15 +11,20 @@ import kotlin.test.assertTrue
 
 internal class StoreTest {
     @Test
-    fun `should not fail if the configuration file does not exists and failOnNonExists is false`() {
-        Store(Tree(Path.of(".")), failOnNonExists = false)
-        assertTrue(true)
+    fun `should not throw Exception if trying to access a stored property in a created store`() {
+        assertDoesNotThrow {
+            Store(Tree(Path.of("."))).create().apply {
+                browser
+            }
+        }
     }
 
     @Test
-    fun `should fail if the configuration file does not exists and failOnNonExists is true`() {
+    fun `should throw Exception if trying to access a stored property in a not created store`() {
         assertThrows<StoreNotExistsException> {
-            Store(Tree(Path.of(".")), failOnNonExists = true)
+            Store(Tree(Path.of("."))).apply {
+                browser
+            }
         }
     }
 
@@ -26,18 +32,24 @@ internal class StoreTest {
     fun `should store the existing configuration`() {
         // Given
         val tree = Tree(Path.of("."))
-        val store = Store(tree, false)
+        val store = Store(tree).create()
 
         // When
         store.language = "ABC"
-        store.useGit = true
+        store.useGit = "true"
         store.credentials = "DEF"
 
         // Then
-        val content = tree.readFile(store.configurationFile)
-        assertNotNull(content)
-        assertContains(content, "git=true")
-        assertContains(content, "language=ABC")
-        assertContains(content, "credentials=DEF")
+        tree.readFile(store.publicConfigurationFile).let { content ->
+            assertNotNull(content)
+            assertContains(content, "useGit=true")
+            assertContains(content, "language=ABC")
+
+        }
+        tree.readFile(store.privateConfigurationFile).let { content ->
+            assertNotNull(content)
+            assertContains(content, "credentials=DEF")
+
+        }
     }
 }

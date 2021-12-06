@@ -2,5 +2,8 @@ package com.github.yakanet.workspace
 
 enum class Language {
     KOTLIN,
-    PYTHON
+    PYTHON,
+    DENO,
+    PHP,
+    JAVA
 }

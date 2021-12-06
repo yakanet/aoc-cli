@@ -45,7 +45,7 @@ class PuzzleRetriever(private val authentication: AoCAuthentication) {
                 if (response.code != 200) {
                     TODO("Unknown code ${response.code}")
                 }
-                response.entity.content.readAllBytes().toString(Charsets.UTF_8)
+                response.entity.content.readAllBytes().toString(Charsets.UTF_8).trimEnd('\n')
             }
         }
     }

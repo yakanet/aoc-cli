@@ -31,12 +31,25 @@ class PythonWorkspace(tree: Tree) : Workspace(tree) {
             |@since ${DateFormat.getDateInstance().format(Date())}
             |@author ${System.getProperty("user.name")}
             |""${'"'}
+            |class Advent${puzzle.day.normalize()}:
+            |    def __init__(self, input_file):
+            |        self.input_file = input_file
             |
-            |file = open('../../../../input/${puzzle.year}/input${puzzle.day.normalize()}.txt', 'r')
-            |lines = file.readlines()
-            |for line in lines:
-            |    print(line)
+            |    def load(self):
+            |        file = open(self.input_file, 'r')
+            |        return file.readlines()
             |
+            |    def part1(self):
+            |        input = self.load()
+            |        print(len(input))
+            |
+            |    def part2(self):
+            |        input = self.load()
+            |        print(len(input))
+            |
+            |puzzle = Advent${puzzle.day.normalize()}('input/${puzzle.year}/input${puzzle.day.normalize()}.txt')
+            |puzzle.part1()
+            |puzzle.part2()
             |""".trimMargin(),
             override
         )

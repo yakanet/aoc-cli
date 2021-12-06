@@ -8,8 +8,9 @@ TODO
 - [x] Logout from your AoC account
 - [x] Kotlin support
 - [x] Python support
-- [ ] Java support
-- [ ] PHP support
+- [x] Java support
+- [x] PHP support
+- [x] Deno support
 - [x] Dry run command
 - [x] Retrieve a puzzle
 - [x] Generate skeleton code for a puzzle

@@ -13,8 +13,11 @@ abstract class Workspace(protected val tree: Tree) {
         tree.writeFile(
             ".gitignore",
             """
-            ${store.configurationFile}
-            input
+            ${store.privateConfigurationFile}
+            /.idea
+            /input
+            /build
+            /.gradle
             """.trimIndent()
         )
         tree.executeCommand("", "git", "add", ".")
@@ -31,4 +34,7 @@ abstract class Workspace(protected val tree: Tree) {
 fun getWorkspace(language: Language, tree: Tree): Workspace = when (language) {
     Language.KOTLIN -> KotlinWorkspace(tree)
     Language.PYTHON -> PythonWorkspace(tree)
+    Language.DENO -> DenoWorkspace(tree)
+    Language.PHP -> PhpWorkspace(tree)
+    Language.JAVA -> JavaWorkspace(tree)
 }

@@ -12,7 +12,7 @@ class LogoutCli : Callable<Int> {
     override fun call(): Int {
         return try {
             val tree = Path.of(".").toTree()
-            val store = Store(tree, true)
+            val store = Store(tree)
             store.credentials = null
             tree.commit()
             return 0

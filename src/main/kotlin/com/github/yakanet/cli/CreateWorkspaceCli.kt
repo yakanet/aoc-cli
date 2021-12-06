@@ -3,7 +3,6 @@ package com.github.yakanet.cli
 import com.github.yakanet.store.Store
 import com.github.yakanet.vsf.toTree
 import com.github.yakanet.workspace.Language
-import com.github.yakanet.workspace.getWorkspace
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.util.concurrent.Callable
@@ -32,13 +31,12 @@ class CreateWorkspaceCli : Callable<Int> {
 
     override fun call(): Int {
         val tree = Path(".").toTree()
-        val workspace = getWorkspace(language, tree).apply {
+        val store = Store(tree).create()
+        store.language = language.name
+        store.useGit = git.toString()
+        val workspace = store.loadWorkspace().apply {
             createWorkspace()
         }
-
-        val store = Store(tree, false)
-        store.language = language.name
-        store.useGit = git
 
         if (git) {
             workspace.createGitConfiguration(store)

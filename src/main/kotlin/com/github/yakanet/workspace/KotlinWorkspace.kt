@@ -15,7 +15,7 @@ class KotlinWorkspace(tree: Tree) : Workspace(tree) {
             "build.gradle",
             """
             plugins {
-                id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+                id 'org.jetbrains.kotlin.jvm' version '1.6.0'
             }
             repositories {
                 mavenCentral()
@@ -25,12 +25,18 @@ class KotlinWorkspace(tree: Tree) : Workspace(tree) {
             }
         """.trimIndent(),
         )
-        tree.writeFile("README.md",
-        """
+        tree.writeFile(
+            "settings.gradle",
+            """rootProject.name = 'aoc'"""
+        )
+        tree.writeFile(
+            "README.md",
+            """
             # Advent of code
             
             Project created using [AOC Cli](https://github.com/yakanet/aoc-cli)
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     override fun createPuzzle(puzzle: Puzzle, override: Boolean) {
@@ -40,6 +46,8 @@ class KotlinWorkspace(tree: Tree) : Workspace(tree) {
             """
             |package advent${puzzle.year}
             |
+            |import java.io.File
+            |
             |/**
             | * ## ${puzzle.title}
             | * 
@@ -47,9 +55,24 @@ class KotlinWorkspace(tree: Tree) : Workspace(tree) {
             | * @since ${DateFormat.getDateInstance().format(Date())}
             | * @author ${System.getProperty("user.name")}
             | */
+            |private class Advent${puzzle.day.normalize()}(private val puzzleFile: File) {
+            |    fun load() = puzzleFile.readLines()
+            |
+            |    fun part1() {
+            |        val input = load()
+            |        println(input.size)
+            |    }
+            |
+            |    fun part2() {
+            |        val input = load()
+            |        println(input.size)
+            |    }
+            |}
+            |
             |fun main() {
-            |   val lines = File("input/${puzzle.year}/input${puzzle.day.normalize()}.txt").readLines()
-            |   println(lines)
+            |    val puzzle = Advent${puzzle.day.normalize()}(File("input/${puzzle.year}/input${puzzle.day.normalize()}.txt"))
+            |    puzzle.part1()
+            |    puzzle.part2()
             |}
             |""".trimMargin(),
             override
